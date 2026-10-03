@@ -1,0 +1,562 @@
+<title>Chemin des Vignobles Boutique</title>
+<style>
+/* Maquette neutre : une colonne centrée, sections empilées, grilles qui passent en une colonne sur mobile.
+   Toutes les couleurs et polices sont des tokens à remplacer par la charte du DA. */
+:root {
+  --bg: #f7f7f6;
+  --surface: #ffffff;
+  --fg: #1c1c1b;
+  --muted: #676765;
+  --line: #e1e1de;
+  --placeholder: #e9e9e6;
+  --accent: #2a2a29;        /* couleur de marque : à remplacer */
+  --on-accent: #ffffff;
+  --good: #2f6b45;
+  --font-display: Georgia, "Times New Roman", serif;   /* police titres : à remplacer */
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 4px;
+  --max: 1160px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151514; --surface: #1d1d1c; --fg: #ededeb; --muted: #a2a29f; --line: #31312f;
+    --placeholder: #262625; --accent: #ededeb; --on-accent: #151514; --good: #7cc495; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151514; --surface: #1d1d1c; --fg: #ededeb; --muted: #a2a29f; --line: #31312f;
+  --placeholder: #262625; --accent: #ededeb; --on-accent: #151514; --good: #7cc495; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3.3rem); }
+h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); }
+h3 { font-size: 1.2rem; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.wrap { max-width: var(--max); margin: 0 auto; padding-inline: 20px; }
+.eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.lead { color: var(--muted); max-width: 62ch; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .75rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); text-decoration: none; font-size: .95rem; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.small { padding: .5rem .9rem; font-size: .85rem; }
+.ph { background: repeating-linear-gradient(135deg, var(--placeholder) 0 12px, transparent 12px 24px), var(--placeholder); display: grid; place-items: center; color: var(--muted); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; border-radius: var(--radius); max-width: 100%; }
+section { padding-block: clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: .75rem; margin-bottom: 2rem; }
+.tabnum { font-variant-numeric: tabular-nums; }
+
+/* Bandeau légal */
+.legal { background: var(--fg); color: var(--bg); font-size: .8rem; text-align: center; padding: .45rem 16px; }
+
+/* En-tête */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .9rem; }
+.logo { font-family: var(--font-display); font-size: 1.15rem; letter-spacing: .04em; text-decoration: none; white-space: nowrap; }
+.logo small { display: block; font-family: var(--font-body); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+nav ul { display: flex; gap: 1.4rem; list-style: none; margin: 0; padding: 0; font-size: .9rem; }
+nav a { text-decoration: none; color: var(--muted); }
+nav a:hover { color: var(--fg); }
+.cart-btn { background: transparent; border: 1px solid var(--line); border-radius: var(--radius); padding: .45rem .8rem; color: var(--fg); font-size: .9rem; white-space: nowrap; }
+.cart-btn b { font-variant-numeric: tabular-nums; }
+@media (max-width: 860px) { nav { display: none; } }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.hero > div { display: grid; gap: 1.25rem; min-width: 0; }
+.hero .ph { aspect-ratio: 4 / 3.4; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .75rem; }
+.facts { display: flex; flex-wrap: wrap; gap: 1.5rem; padding-top: .5rem; font-size: .85rem; color: var(--muted); }
+.facts b { display: block; color: var(--fg); font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+
+/* Occasions */
+.occasions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.occ { display: grid; gap: .5rem; text-decoration: none; padding: 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.occ:hover { border-color: var(--fg); }
+.occ span { color: var(--muted); font-size: .9rem; }
+@media (max-width: 760px) { .occasions { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 460px) { .occasions { grid-template-columns: 1fr; } }
+
+/* Catalogue */
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.5rem; }
+.chip { border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: 999px; padding: .35rem .9rem; font-size: .85rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+@media (max-width: 980px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .grid { grid-template-columns: 1fr; } }
+.card { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+.card .ph { aspect-ratio: 3 / 4; }
+.card .dom { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.card h3 { font-size: 1.05rem; }
+.card .meta { font-size: .85rem; color: var(--muted); }
+.card .note { font-size: .85rem; font-style: italic; border-left: 2px solid var(--line); padding-left: .6rem; }
+.card .row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: auto; padding-top: .4rem; }
+.price { font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.split { font-size: .78rem; color: var(--muted); }
+.disclaimer { margin-top: 1.5rem; font-size: .8rem; color: var(--muted); }
+
+/* Coffrets */
+.boxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.box { display: flex; flex-direction: column; gap: .75rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; min-width: 0; }
+.box .ph { aspect-ratio: 16 / 10; }
+.box ul { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: .9rem; }
+.box .row { display: flex; align-items: end; justify-content: space-between; gap: .5rem; margin-top: auto; }
+@media (max-width: 860px) { .boxes { grid-template-columns: 1fr; } }
+
+/* Abonnement cave */
+.tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.tier { display: flex; flex-direction: column; gap: .9rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.tier.featured { border-color: var(--fg); }
+.tier .amount { font-family: var(--font-display); font-size: 2rem; font-variant-numeric: tabular-nums; }
+.tier .amount small { font-family: var(--font-body); font-size: .9rem; color: var(--muted); }
+.tier ul { margin: 0; padding-left: 1.1rem; font-size: .92rem; display: grid; gap: .35rem; }
+.tier .btn { margin-top: auto; }
+@media (max-width: 860px) { .tiers { grid-template-columns: 1fr; } }
+.cellar { margin-top: 2.5rem; display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: start; }
+.cellar > div { min-width: 0; display: grid; gap: .75rem; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+.stat { border: 1px solid var(--line); border-radius: var(--radius); padding: .75rem; background: var(--surface); }
+.stat b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.stat span { font-size: .78rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 560px; }
+th, td { text-align: left; padding: .65rem .8rem; border-bottom: 1px solid var(--line); }
+th { font-weight: 500; color: var(--muted); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+td.num { font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+.pill { display: inline-block; font-size: .75rem; padding: .1rem .55rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.ready { border-color: var(--good); color: var(--good); }
+@media (max-width: 860px) { .cellar { grid-template-columns: 1fr; } }
+
+/* Espace Pro */
+.pro { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; }
+.pro > div { min-width: 0; display: grid; gap: 1rem; align-content: start; }
+form { display: grid; gap: .9rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.field { display: grid; gap: .3rem; font-size: .88rem; }
+.field input, .field select { font: inherit; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); color: var(--fg); width: 100%; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.estimate { font-size: .95rem; padding: .75rem; background: var(--bg); border-radius: var(--radius); font-variant-numeric: tabular-nums; }
+.pro-list { display: grid; gap: .6rem; padding: 0; margin: 0; list-style: none; }
+.pro-list li { padding: .8rem 0; border-bottom: 1px solid var(--line); }
+@media (max-width: 860px) { .pro { grid-template-columns: 1fr; } .two { grid-template-columns: 1fr; } }
+
+/* Ateliers */
+.events { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.event { display: grid; grid-template-columns: 7rem 1fr auto; gap: 1.25rem; align-items: center; padding-block: 1.1rem; border-bottom: 1px solid var(--line); }
+.event .date { font-family: var(--font-display); font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.event .date small { display: block; font-family: var(--font-body); font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.event > div { min-width: 0; }
+.event p { color: var(--muted); font-size: .9rem; }
+@media (max-width: 600px) { .event { grid-template-columns: 1fr; gap: .4rem; } }
+
+/* Pied de page */
+footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size: .9rem; color: var(--muted); }
+.foot { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; }
+.foot h4 { margin: 0 0 .5rem; color: var(--fg); font-weight: 500; font-size: .85rem; }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .3rem; }
+.sante { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .8rem; }
+@media (max-width: 700px) { .foot { grid-template-columns: 1fr; } }
+
+/* Panier */
+.drawer { position: fixed; inset: 0 0 0 auto; width: min(420px, 100%); background: var(--surface); border-left: 1px solid var(--line); z-index: 30; display: flex; flex-direction: column; padding: calc(1.25rem + env(safe-area-inset-top, 0px)) 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px)); gap: 1rem; box-shadow: -12px 0 32px rgba(0,0,0,.12); }
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 25; }
+.drawer-head { display: flex; justify-content: space-between; align-items: center; }
+.close { background: none; border: 0; color: var(--fg); font-size: 1.5rem; line-height: 1; }
+.lines { flex: 1; overflow-y: auto; display: grid; gap: .75rem; align-content: start; }
+.line { display: grid; grid-template-columns: 1fr auto; gap: .25rem .75rem; font-size: .9rem; padding-bottom: .75rem; border-bottom: 1px solid var(--line); }
+.line .qty { display: flex; gap: .4rem; align-items: center; color: var(--muted); }
+.line .qty button { width: 1.7rem; height: 1.7rem; border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: var(--radius); }
+.totals { display: grid; gap: .6rem; font-variant-numeric: tabular-nums; }
+.totals .sum { display: flex; justify-content: space-between; font-size: 1.1rem; }
+.pay-opts { display: grid; gap: .4rem; }
+.pay-opt { display: flex; justify-content: space-between; gap: .5rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: var(--radius); font-size: .88rem; }
+.pay-opt.off { color: var(--muted); border-style: dashed; }
+.toast { font-size: .85rem; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .drawer { transition: transform .25s ease; } }
+</style>
+
+<div class="legal">La vente d'alcool est interdite aux mineurs. En poursuivant, vous confirmez avoir 18 ans ou plus.</div>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top">Le Chemin des Vignobles<small>Cave et épicerie fine · Ajaccio</small></a>
+    <nav aria-label="Navigation principale">
+      <ul>
+        <li><a href="#occasions">Occasions</a></li>
+        <li><a href="#selection">Vins</a></li>
+        <li><a href="#coffrets">Coffrets</a></li>
+        <li><a href="#abonnement">Abonnement cave</a></li>
+        <li><a href="#pro">Espace Pro</a></li>
+        <li><a href="#ateliers">Ateliers</a></li>
+      </ul>
+    </nav>
+    <button class="cart-btn" id="cart-open" type="button">Panier · <b id="cart-count">0</b></button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">Ajaccio · depuis la cave de l'avenue Franchini</p>
+      <h1>Les vins de Corse, choisis un par un.</h1>
+      <p class="lead">Nous avons 2 000 références en cave. Ici, on vous en montre une sélection, avec pour chaque bouteille l'avis de Nicolas Stromboni, meilleur caviste de France 2011. Le reste ? Il suffit de nous le demander.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#selection">Voir la sélection</a>
+        <a class="btn ghost" href="#abonnement">Construire sa cave</a>
+      </div>
+      <div class="facts">
+        <div><b class="tabnum">100 000</b>bouteilles en cave</div>
+        <div><b>3 ou 4 fois</b>sans frais dès 150 €</div>
+        <div><b>Corse et monde</b>livraison France et export</div>
+      </div>
+    </div>
+    <div class="ph" role="img" aria-label="Emplacement photo">Photo de la cave · visuel DA</div>
+  </div>
+
+  <section id="occasions">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Par occasion</p>
+        <h2>Vous savez pour quand, on s'occupe du quoi.</h2>
+      </div>
+      <div class="occasions">
+        <a class="occ" href="#selection" data-occ="offrir"><h3>Offrir</h3><span>La bouteille qui fait plaisir, prête à emballer.</span></a>
+        <a class="occ" href="#selection" data-occ="remercier"><h3>Remercier un client</h3><span>Un cadeau qui laisse un souvenir, avec carte manuscrite.</span></a>
+        <a class="occ" href="#selection" data-occ="recevoir"><h3>Recevoir à la maison</h3><span>De l'apéritif au dessert, accords compris.</span></a>
+        <a class="occ" href="#selection" data-occ="grande"><h3>Grandes occasions</h3><span>Les cuvées rares et les grands formats.</span></a>
+        <a class="occ" href="#selection" data-occ="decouvrir"><h3>Découvrir la Corse</h3><span>Niellucciu, sciaccarellu, vermentinu : par où commencer.</span></a>
+        <a class="occ" href="#selection" data-occ="tous"><h3>Tous les vins</h3><span>Par domaine, appellation ou couleur.</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="selection">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">La sélection</p>
+        <h2>Ce qu'on ouvrirait ce soir</h2>
+        <p class="lead" id="occ-label">Toute la sélection.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filtrer par couleur">
+        <button class="chip" type="button" data-color="tous" aria-pressed="true">Tous</button>
+        <button class="chip" type="button" data-color="rouge" aria-pressed="false">Rouge</button>
+        <button class="chip" type="button" data-color="blanc" aria-pressed="false">Blanc</button>
+        <button class="chip" type="button" data-color="rosé" aria-pressed="false">Rosé</button>
+        <button class="chip" type="button" data-color="épicerie" aria-pressed="false">Épicerie fine</button>
+      </div>
+      <div class="grid" id="products"></div>
+      <p class="disclaimer">Maquette : les cuvées sont données à titre d'exemple et les prix sont fictifs.</p>
+    </div>
+  </section>
+
+  <section id="coffrets">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Coffrets</p>
+        <h2>Le vin et ce qui va avec</h2>
+        <p class="lead">Chaque coffret associe nos vins et nos produits d'épicerie fine. Il part emballé, avec un mot écrit à la main si vous le souhaitez.</p>
+      </div>
+      <div class="boxes" id="boxes"></div>
+    </div>
+  </section>
+
+  <section id="abonnement">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Abonnement cave</p>
+        <h2>Une cave qui se remplit chaque mois, gardée à Ajaccio</h2>
+        <p class="lead">Vous versez une somme chaque mois et elle reste à vous. Elle sert à acheter des vins qui dorment chez nous, dans de bonnes conditions, jusqu'au jour où vous avez envie de les ouvrir. Nos membres passent en premier sur les cuvées rares. On ne vous vend pas un placement : on vous aide à bâtir une cave que vous aurez envie de boire.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier">
+          <p class="eyebrow">Découverte</p>
+          <p class="amount">50 € <small>/ mois</small></p>
+          <ul>
+            <li>Une sélection commentée chaque trimestre</li>
+            <li>Accès aux ventes privées</li>
+            <li>Livraison ou retrait en cave</li>
+          </ul>
+          <button class="btn ghost" type="button" data-tier="Découverte">Choisir</button>
+        </div>
+        <div class="tier featured">
+          <p class="eyebrow">Amateur</p>
+          <p class="amount">150 € <small>/ mois</small></p>
+          <ul>
+            <li>Priorité sur les allocations de vins corses</li>
+            <li>Garde offerte la première année</li>
+            <li>Une dégustation par an au bar à vin</li>
+          </ul>
+          <button class="btn" type="button" data-tier="Amateur">Choisir</button>
+        </div>
+        <div class="tier">
+          <p class="eyebrow">Collectionneur</p>
+          <p class="amount">400 € <small>/ mois et plus</small></p>
+          <ul>
+            <li>Votre cave composée avec Nicolas</li>
+            <li>Verticales, magnums, cuvées confidentielles</li>
+            <li>Soirée annuelle des membres</li>
+          </ul>
+          <button class="btn ghost" type="button" data-tier="Collectionneur">Choisir</button>
+        </div>
+      </div>
+      <p class="toast" id="tier-msg" role="status"></p>
+
+      <div class="cellar">
+        <div>
+          <p class="eyebrow">Exemple d'espace membre</p>
+          <h3>Ma cave</h3>
+          <p class="lead">Chaque membre voit ses bouteilles, leurs millésimes et le moment conseillé pour les ouvrir. En un clic, il se les fait livrer ou il les réserve pour sa prochaine soirée au bar.</p>
+          <div class="stats">
+            <div class="stat"><b>38</b><span>bouteilles</span></div>
+            <div class="stat"><b>6</b><span>prêtes à boire</span></div>
+            <div class="stat"><b>1 850 €</b><span>versés</span></div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Vin</th><th>Millésime</th><th>Qté</th><th>À ouvrir</th><th>État</th></tr></thead>
+            <tbody>
+              <tr><td>Clos Canarelli, Corse Figari rouge</td><td class="num">2021</td><td class="num">6</td><td class="num">2026–2034</td><td><span class="pill ready">Prêt</span></td></tr>
+              <tr><td>Domaine Comte Abbatucci, Faustine rouge</td><td class="num">2022</td><td class="num">12</td><td class="num">2027–2032</td><td><span class="pill">En garde</span></td></tr>
+              <tr><td>Domaine Antoine Arena, Patrimonio blanc</td><td class="num">2023</td><td class="num">6</td><td class="num">2026–2030</td><td><span class="pill ready">Prêt</span></td></tr>
+              <tr><td>Clos Venturi, rouge</td><td class="num">2020</td><td class="num">8</td><td class="num">2028–2036</td><td><span class="pill">En garde</span></td></tr>
+              <tr><td>Sant Armettu, Myrtus rouge</td><td class="num">2022</td><td class="num">6</td><td class="num">2027–2033</td><td><span class="pill">En garde</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pro">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Espace Pro</p>
+        <h2>Pour les entreprises, les importateurs et les restaurateurs</h2>
+      </div>
+      <div class="pro">
+        <div>
+          <h3>Cadeaux d'affaires</h3>
+          <p class="lead">Dites-nous combien de personnes vous voulez remercier et votre budget. On compose les coffrets, on écrit les cartes et on livre chaque destinataire.</p>
+          <form id="gift-form" novalidate>
+            <div class="two">
+              <label class="field" for="g-company">Entreprise<input id="g-company" type="text" placeholder="Nom de l'entreprise"></label>
+              <label class="field" for="g-occasion">Occasion
+                <select id="g-occasion">
+                  <option>Fin d'année</option>
+                  <option>Remerciement client</option>
+                  <option>Séminaire ou événement</option>
+                  <option>Cuvée à votre étiquette</option>
+                </select>
+              </label>
+            </div>
+            <div class="two">
+              <label class="field" for="g-count">Nombre de destinataires<input id="g-count" type="number" min="1" value="40" inputmode="numeric"></label>
+              <label class="field" for="g-budget">Budget par personne (€ TTC)<input id="g-budget" type="number" min="20" step="5" value="60" inputmode="numeric"></label>
+            </div>
+            <p class="estimate" id="g-estimate" aria-live="polite"></p>
+            <button class="btn" type="submit">Demander une proposition</button>
+            <p class="toast" id="g-msg" role="status"></p>
+          </form>
+        </div>
+        <div>
+          <h3>Importateurs et CHR</h3>
+          <p class="lead">Un accès réservé, ouvert sur invitation.</p>
+          <ul class="pro-list">
+            <li>Vos tarifs et vos conditions, à jour</li>
+            <li>La commande en ligne et le suivi des expéditions</li>
+            <li>Les fiches techniques et les documents export</li>
+            <li>Les allocations de la saison</li>
+          </ul>
+          <button class="btn ghost" type="button" id="pro-login">Se connecter à l'espace pro</button>
+          <p class="toast" id="pro-msg" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ateliers">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Ateliers et tables</p>
+        <h2>Apprendre, goûter, rester dîner</h2>
+      </div>
+      <div class="events">
+        <div class="event"><p class="date">17 oct.<small>Vendredi · 19h</small></p><div><h3>Les cépages corses en six verres</h3><p>Atelier d'initiation · 12 places · 45 €</p></div><button class="btn small ghost" type="button" data-event="Les cépages corses en six verres">Réserver</button></div>
+        <div class="event"><p class="date">7 nov.<small>Vendredi · 19h</small></p><div><h3>Patrimonio : verticale de blancs</h3><p>Dégustation · 10 places · 65 €</p></div><button class="btn small ghost" type="button" data-event="Patrimonio : verticale de blancs">Réserver</button></div>
+        <div class="event"><p class="date">21 nov.<small>Vendredi · 20h</small></p><div><h3>Première table d'hiver</h3><p>Dîner et accords · 20 places · 80 €</p></div><button class="btn small ghost" type="button" data-event="Première table d'hiver">Réserver</button></div>
+      </div>
+      <p class="toast" id="ev-msg" role="status"></p>
+      <p class="disclaimer">Maquette : les dates et les tarifs sont donnés à titre d'exemple.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <p class="logo">Le Chemin des Vignobles</p>
+        <p>Avenue du Docteur Noël Franchini, 20090 Ajaccio</p>
+        <p>Téléphone : <span class="tabnum">04 95 51 46 61</span></p>
+        <p>Horaires : à compléter</p>
+      </div>
+      <div>
+        <h4>Boutique</h4>
+        <ul><li><a href="#selection">Vins</a></li><li><a href="#coffrets">Coffrets</a></li><li><a href="#abonnement">Abonnement cave</a></li></ul>
+      </div>
+      <div>
+        <h4>Informations</h4>
+        <ul><li>Livraison et export</li><li>Paiement en plusieurs fois</li><li>Conditions générales de vente</li><li>Mentions légales</li></ul>
+      </div>
+    </div>
+    <p class="sante">L'abus d'alcool est dangereux pour la santé. À consommer avec modération.</p>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Panier">
+  <div class="drawer-head"><h3>Votre panier</h3><button class="close" id="cart-close" type="button" aria-label="Fermer le panier">×</button></div>
+  <div class="lines" id="lines"></div>
+  <div class="totals">
+    <div class="sum"><span>Total</span><b id="total">0 €</b></div>
+    <div class="pay-opts" id="pay-opts"></div>
+    <button class="btn" type="button" id="checkout">Passer commande</button>
+    <p class="toast" id="checkout-msg" role="status"></p>
+  </div>
+</aside>
+
+<script>
+const PRODUCTS = [
+  { id: 'canarelli', dom: 'Clos Canarelli', name: 'Corse Figari rouge', app: 'AOP Corse Figari', color: 'rouge', price: 48, occ: ['offrir', 'grande', 'decouvrir'], note: 'Le vin qui a fait connaître le sud de l’île.' },
+  { id: 'faustine', dom: 'Domaine Comte Abbatucci', name: 'Faustine rouge', app: 'AOP Ajaccio', color: 'rouge', price: 36, occ: ['recevoir', 'decouvrir', 'offrir'], note: 'Le sciaccarellu dans ce qu’il a de plus fin.' },
+  { id: 'arena', dom: 'Domaine Antoine Arena', name: 'Patrimonio blanc', app: 'AOP Patrimonio', color: 'blanc', price: 42, occ: ['recevoir', 'grande'], note: 'Un vermentinu à garder quelques années.' },
+  { id: 'venturi', dom: 'Clos Venturi', name: 'Rouge', app: 'AOP Corse', color: 'rouge', price: 39, occ: ['remercier', 'offrir'], note: 'Le cœur de l’île, en altitude.' },
+  { id: 'myrtus', dom: 'Sant Armettu', name: 'Myrtus rouge', app: 'AOP Corse Sartène', color: 'rouge', price: 29, occ: ['recevoir', 'decouvrir'], note: 'Une belle porte d’entrée vers Sartène.' },
+  { id: 'gouverneurs', dom: 'Orenga de Gaffory', name: 'Cuvée des Gouverneurs blanc', app: 'AOP Patrimonio', color: 'blanc', price: 34, occ: ['remercier', 'recevoir'], note: 'Un blanc de repas, ample et salin.' },
+  { id: 'rose', dom: 'Domaine Comte Abbatucci', name: 'Faustine rosé', app: 'AOP Ajaccio', color: 'rosé', price: 27, occ: ['recevoir', 'decouvrir'], note: 'Pour l’apéritif face à la mer.' },
+  { id: 'magnum', dom: 'Clos Canarelli', name: 'Corse Figari rouge, magnum', app: 'AOP Corse Figari', color: 'rouge', price: 105, occ: ['grande', 'offrir'], note: 'Le format des grandes tablées.' },
+  { id: 'canistrelli', dom: 'Épicerie fine', name: 'Canistrelli au vin blanc', app: 'Biscuiterie corse', color: 'épicerie', price: 9, occ: ['recevoir', 'offrir'], note: 'À tremper, sans complexe.' },
+  { id: 'charcuterie', dom: 'Épicerie fine', name: 'Coppa et lonzu, duo', app: 'Charcuterie corse', color: 'épicerie', price: 32, occ: ['recevoir', 'remercier'], note: 'Avec un rouge de Sartène.' },
+  { id: 'confiture', dom: 'Épicerie fine', name: 'Confiture de figue', app: 'Confiserie corse', color: 'épicerie', price: 8, occ: ['recevoir'], note: 'Pour le brocciu ou la tomme de brebis.' },
+  { id: 'huile', dom: 'Épicerie fine', name: 'Huile d’olive de Corse', app: 'Moulin corse', color: 'épicerie', price: 24, occ: ['offrir', 'decouvrir'], note: 'Douce, à peine fruitée.' }
+];
+const BOXES = [
+  { id: 'box-apero', dom: 'Coffret', name: 'Apéritif corse', price: 89, items: ['Faustine rosé', 'Coppa et lonzu, duo', 'Canistrelli au vin blanc', 'Confiture de figue'] },
+  { id: 'box-merci', dom: 'Coffret', name: 'Merci', price: 129, items: ['Clos Venturi rouge', 'Cuvée des Gouverneurs blanc', 'Huile d’olive de Corse', 'Carte écrite à la main'] },
+  { id: 'box-grand', dom: 'Coffret', name: 'Grands vins de Corse', price: 189, items: ['Clos Canarelli, Corse Figari rouge', 'Domaine Antoine Arena, Patrimonio blanc', 'Domaine Comte Abbatucci, Faustine rouge', 'Fiche de dégustation signée'] }
+];
+const OCC_LABEL = { offrir: 'Pour offrir.', remercier: 'Pour remercier un client.', recevoir: 'Pour recevoir à la maison.', grande: 'Pour les grandes occasions.', decouvrir: 'Pour découvrir la Corse.', tous: 'Toute la sélection.' };
+const ALL = [...PRODUCTS, ...BOXES];
+const eur = n => n.toLocaleString('fr-FR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
+const SPLIT_MIN = 150, TEN_MIN = 500;
+
+let color = 'tous', occ = 'tous';
+const cart = new Map();
+
+function splitLine(price) {
+  return price >= SPLIT_MIN ? `ou 3 × ${eur(Math.ceil(price / 3 * 100) / 100)} sans frais` : '';
+}
+
+function renderProducts() {
+  const list = PRODUCTS.filter(p => (color === 'tous' || p.color === color) && (occ === 'tous' || p.occ.includes(occ)));
+  document.getElementById('occ-label').textContent = OCC_LABEL[occ];
+  document.getElementById('products').innerHTML = list.length ? list.map(p => `
+    <article class="card">
+      <div class="ph" role="img" aria-label="Emplacement photo">Bouteille</div>
+      <p class="dom">${p.dom}</p>
+      <h3>${p.name}</h3>
+      <p class="meta">${p.app}${p.color !== 'épicerie' ? ' · ' + p.color : ''}</p>
+      <p class="note">« ${p.note} »</p>
+      <div class="row">
+        <div><p class="price">${eur(p.price)}</p><p class="split">${splitLine(p.price)}</p></div>
+        <button class="btn small" type="button" data-add="${p.id}">Ajouter</button>
+      </div>
+    </article>`).join('') : '<p class="lead">Rien dans cette combinaison pour l’instant. Essayez une autre couleur.</p>';
+}
+
+function renderBoxes() {
+  document.getElementById('boxes').innerHTML = BOXES.map(b => `
+    <article class="box">
+      <div class="ph" role="img" aria-label="Emplacement photo">Coffret</div>
+      <h3>${b.name}</h3>
+      <ul>${b.items.map(i => `<li>${i}</li>`).join('')}</ul>
+      <div class="row">
+        <div><p class="price">${eur(b.price)}</p><p class="split">${splitLine(b.price)}</p></div>
+        <button class="btn small" type="button" data-add="${b.id}">Ajouter</button>
+      </div>
+    </article>`).join('');
+}
+
+function renderCart() {
+  let count = 0, total = 0;
+  const rows = [];
+  for (const [id, qty] of cart) {
+    const p = ALL.find(x => x.id === id);
+    count += qty; total += p.price * qty;
+    rows.push(`<div class="line"><span>${p.dom} · ${p.name}</span><b class="tabnum">${eur(p.price * qty)}</b>
+      <span class="qty"><button type="button" data-dec="${id}" aria-label="Retirer une unité">−</button><span class="tabnum">${qty}</span><button type="button" data-add="${id}" aria-label="Ajouter une unité">+</button></span></div>`);
+  }
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('lines').innerHTML = rows.join('') || '<p class="lead">Votre panier est vide.</p>';
+  document.getElementById('total').textContent = eur(total);
+  const opt = (label, n, min) => total >= min
+    ? `<div class="pay-opt"><span>${label}</span><span class="tabnum">${n > 1 ? n + ' × ' + eur(Math.ceil(total / n * 100) / 100) : eur(total)}</span></div>`
+    : `<div class="pay-opt off"><span>${label}</span><span>dès ${eur(min)}</span></div>`;
+  document.getElementById('pay-opts').innerHTML = total ? [
+    opt('Comptant', 1, 0), opt('En 3 fois sans frais', 3, SPLIT_MIN), opt('En 4 fois sans frais', 4, SPLIT_MIN), opt('En 10 fois', 10, TEN_MIN)
+  ].join('') : '';
+  document.getElementById('checkout').disabled = !total;
+  document.getElementById('checkout-msg').textContent = '';
+}
+
+function openCart(open) {
+  document.getElementById('drawer').hidden = !open;
+  document.getElementById('scrim').hidden = !open;
+  if (open) document.getElementById('cart-close').focus();
+}
+
+function updateEstimate() {
+  const n = Math.max(0, Number(document.getElementById('g-count').value) || 0);
+  const b = Math.max(0, Number(document.getElementById('g-budget').value) || 0);
+  document.getElementById('g-estimate').textContent = n && b
+    ? `Budget estimé : ${eur(n * b)} TTC pour ${n} destinataire${n > 1 ? 's' : ''}, livraison à préciser.`
+    : 'Indiquez un nombre de destinataires et un budget.';
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('button, a');
+  if (!t) return;
+  if (t.dataset.add) { cart.set(t.dataset.add, (cart.get(t.dataset.add) || 0) + 1); renderCart(); if (!t.closest('.drawer')) openCart(true); }
+  else if (t.dataset.dec) { const q = (cart.get(t.dataset.dec) || 0) - 1; q > 0 ? cart.set(t.dataset.dec, q) : cart.delete(t.dataset.dec); renderCart(); }
+  else if (t.dataset.color) {
+    color = t.dataset.color;
+    document.querySelectorAll('[data-color]').forEach(c => c.setAttribute('aria-pressed', String(c === t)));
+    renderProducts();
+  }
+  else if (t.dataset.occ) { occ = t.dataset.occ; renderProducts(); }
+  else if (t.dataset.tier) document.getElementById('tier-msg').textContent = `Formule ${t.dataset.tier} choisie. Dans la version finale, l'inscription et le prélèvement mensuel se feront ici.`;
+  else if (t.dataset.event) document.getElementById('ev-msg').textContent = `Réservation « ${t.dataset.event} » : dans la version finale, le paiement de la place se fera ici.`;
+  else if (t.id === 'cart-open') openCart(true);
+  else if (t.id === 'cart-close') openCart(false);
+  else if (t.id === 'checkout') document.getElementById('checkout-msg').textContent = 'Maquette : le paiement (carte et Alma) sera branché dans la version finale.';
+  else if (t.id === 'pro-login') document.getElementById('pro-msg').textContent = 'Maquette : l’accès pro sera relié aux comptes clients de l’ERP.';
+});
+document.getElementById('scrim').addEventListener('click', () => openCart(false));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') openCart(false); });
+document.getElementById('gift-form').addEventListener('input', updateEstimate);
+document.getElementById('gift-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const c = document.getElementById('g-company').value.trim();
+  document.getElementById('g-msg').textContent = c
+    ? `Demande enregistrée pour ${c}. Dans la version finale, elle arrivera directement à la cave.`
+    : 'Indiquez le nom de l’entreprise pour envoyer la demande.';
+});
+
+renderProducts(); renderBoxes(); renderCart(); updateEstimate();
+</script>
