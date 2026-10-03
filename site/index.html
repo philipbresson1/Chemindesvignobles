@@ -29,6 +29,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; line-height: 1.15; }
 h1 { font-size: clamp(2rem, 5vw, 3.3rem); }
@@ -43,6 +44,7 @@ button { font: inherit; cursor: pointer; }
 .lead { color: var(--muted); max-width: 62ch; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .75rem 1.25rem; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); text-decoration: none; font-size: .95rem; }
 .btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
 .btn.small { padding: .5rem .9rem; font-size: .85rem; }
 .ph { background: repeating-linear-gradient(135deg, var(--placeholder) 0 12px, transparent 12px 24px), var(--placeholder); display: grid; place-items: center; color: var(--muted); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; border-radius: var(--radius); max-width: 100%; }
 section { padding-block: clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--line); }
@@ -154,6 +156,37 @@ form { display: grid; gap: .9rem; padding: 1.5rem; border: 1px solid var(--line)
 .event p { color: var(--muted); font-size: .9rem; }
 @media (max-width: 600px) { .event { grid-template-columns: 1fr; gap: .4rem; } }
 
+
+/* Réservations */
+.tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: .7rem .2rem; margin-right: 1.2rem; color: var(--muted); font-size: .95rem; }
+.tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
+.panel { display: grid; gap: 1.25rem; }
+.panel-intro { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; align-items: start; }
+.panel-intro > * { min-width: 0; }
+.aside-box { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 1.1rem; display: grid; gap: .4rem; font-size: .9rem; }
+.aside-box b { font-weight: 500; }
+@media (max-width: 860px) { .panel-intro { grid-template-columns: 1fr; } }
+.seats { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.seats.low { color: var(--fg); font-weight: 500; }
+.choice { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+.choice label { display: grid; gap: .2rem; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: .9rem; }
+.choice label:has(input:checked) { border-color: var(--fg); }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice label:has(input:focus-visible) { outline: 2px solid var(--fg); outline-offset: 2px; }
+.choice span { color: var(--muted); font-size: .82rem; }
+@media (max-width: 520px) { .choice { grid-template-columns: 1fr; } }
+.days { display: grid; grid-template-columns: repeat(6, 1fr); gap: .5rem; }
+.slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: .5rem; }
+@media (max-width: 640px) { .days, .slots { grid-template-columns: repeat(3, 1fr); } }
+.pick { border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: var(--radius); padding: .55rem .3rem; font-size: .85rem; text-align: center; font-variant-numeric: tabular-nums; }
+.pick small { display: block; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+.pick[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.pick[aria-pressed="true"] small { color: var(--on-accent); }
+.pick:disabled { color: var(--muted); text-decoration: line-through; opacity: .55; cursor: not-allowed; }
+.step-label { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.recap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+
 /* Pied de page */
 footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size: .9rem; color: var(--muted); }
 .foot { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; }
@@ -192,7 +225,7 @@ footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size:
         <li><a href="#coffrets">Coffrets</a></li>
         <li><a href="#abonnement">Abonnement cave</a></li>
         <li><a href="#pro">Espace Pro</a></li>
-        <li><a href="#ateliers">Ateliers</a></li>
+        <li><a href="#reserver">Réserver</a></li>
       </ul>
     </nav>
     <button class="cart-btn" id="cart-open" type="button">Panier · <b id="cart-count">0</b></button>
@@ -380,19 +413,85 @@ footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size:
     </div>
   </section>
 
-  <section id="ateliers">
+  <section id="reserver">
     <div class="wrap">
       <div class="sec-head">
-        <p class="eyebrow">Ateliers et tables</p>
-        <h2>Apprendre, goûter, rester dîner</h2>
+        <p class="eyebrow">Réserver</p>
+        <h2>Venir apprendre, déguster ou se faire conseiller</h2>
+        <p class="lead">Cours, soirées privées et rendez-vous avec un caviste : tout se réserve ici, et se paie en ligne quand c'est possible.</p>
       </div>
-      <div class="events">
-        <div class="event"><p class="date">17 oct.<small>Vendredi · 19h</small></p><div><h3>Les cépages corses en six verres</h3><p>Atelier d'initiation · 12 places · 45 €</p></div><button class="btn small ghost" type="button" data-event="Les cépages corses en six verres">Réserver</button></div>
-        <div class="event"><p class="date">7 nov.<small>Vendredi · 19h</small></p><div><h3>Patrimonio : verticale de blancs</h3><p>Dégustation · 10 places · 65 €</p></div><button class="btn small ghost" type="button" data-event="Patrimonio : verticale de blancs">Réserver</button></div>
-        <div class="event"><p class="date">21 nov.<small>Vendredi · 20h</small></p><div><h3>Première table d'hiver</h3><p>Dîner et accords · 20 places · 80 €</p></div><button class="btn small ghost" type="button" data-event="Première table d'hiver">Réserver</button></div>
+      <div class="tabs" role="tablist" aria-label="Type de réservation">
+        <button class="tab" role="tab" id="tab-cours" aria-controls="p-cours" aria-selected="true" type="button">Cours d'œnologie</button>
+        <button class="tab" role="tab" id="tab-soiree" aria-controls="p-soiree" aria-selected="false" type="button">Soirée dégustation et CE</button>
+        <button class="tab" role="tab" id="tab-rdv" aria-controls="p-rdv" aria-selected="false" type="button">Rendez-vous conseil</button>
       </div>
-      <p class="toast" id="ev-msg" role="status"></p>
-      <p class="disclaimer">Maquette : les dates et les tarifs sont donnés à titre d'exemple.</p>
+
+      <div class="panel" id="p-cours" role="tabpanel" aria-labelledby="tab-cours">
+        <div class="panel-intro">
+          <p class="lead">Des séances en petit groupe, à la cave, pour comprendre ce qu'on a dans le verre. Choisissez une date et le nombre de places : elles s'ajoutent au panier.</p>
+          <div class="aside-box"><b>Bon à savoir</b><p>Les places s'offrent aussi : une carte cadeau est envoyée par e-mail.</p></div>
+        </div>
+        <div class="events" id="courses"></div>
+      </div>
+
+      <div class="panel" id="p-soiree" role="tabpanel" aria-labelledby="tab-soiree" hidden>
+        <div class="panel-intro">
+          <p class="lead">Le bar à vin de l'étage se privatise pour un anniversaire, une soirée entre amis ou le comité d'entreprise. Dites-nous pour combien de personnes et quelle formule : on revient vers vous avec un devis.</p>
+          <div class="aside-box"><b>Comités d'entreprise</b><p>Tarifs de groupe, facture au nom du CE, paiement par virement à 30 jours.</p></div>
+        </div>
+        <form id="event-form" novalidate>
+          <div class="two">
+            <label class="field" for="e-type">Type de soirée
+              <select id="e-type">
+                <option>Soirée dégustation privée</option>
+                <option>Comité d'entreprise</option>
+                <option>Séminaire ou afterwork</option>
+                <option>Anniversaire ou fête de famille</option>
+              </select>
+            </label>
+            <label class="field" for="e-org">Nom ou entreprise<input id="e-org" type="text" placeholder="Votre nom ou celui du CE"></label>
+          </div>
+          <div class="two">
+            <label class="field" for="e-date">Date souhaitée<input id="e-date" type="date" value="2026-11-14"></label>
+            <label class="field" for="e-people">Nombre de personnes (10 à 40)<input id="e-people" type="number" min="10" max="40" value="20" inputmode="numeric"></label>
+          </div>
+          <div class="choice" role="radiogroup" aria-label="Formule">
+            <label for="f1"><input type="radio" name="formule" id="f1" value="45" checked>Dégustation de 6 vins<span>45 € par personne</span></label>
+            <label for="f2"><input type="radio" name="formule" id="f2" value="65">Dégustation et planches corses<span>65 € par personne</span></label>
+            <label for="f3"><input type="radio" name="formule" id="f3" value="90">Dîner et accords mets-vins<span>90 € par personne</span></label>
+            <label for="f4"><input type="radio" name="formule" id="f4" value="0">Sur mesure<span>On en parle ensemble</span></label>
+          </div>
+          <p class="estimate" id="e-estimate" aria-live="polite"></p>
+          <button class="btn" type="submit">Demander un devis</button>
+          <p class="toast" id="e-msg" role="status"></p>
+        </form>
+      </div>
+
+      <div class="panel" id="p-rdv" role="tabpanel" aria-labelledby="tab-rdv" hidden>
+        <div class="panel-intro">
+          <p class="lead">Une heure en tête-à-tête pour choisir les bons vins : une cave à monter, un mariage à prévoir, un cadeau qui compte. Le prix du rendez-vous est déduit de vos achats du jour.</p>
+          <div class="aside-box"><b>Vous êtes loin d'Ajaccio ?</b><p>Le rendez-vous se fait aussi en visio, et la commande part chez vous ensuite.</p></div>
+        </div>
+        <p class="step-label">1. Avec qui</p>
+        <div class="choice" role="radiogroup" aria-label="Conseiller">
+          <label for="w1"><input type="radio" name="who" id="w1" value="team" checked>Un caviste de l'équipe<span>30 €, déduits de vos achats</span></label>
+          <label for="w2"><input type="radio" name="who" id="w2" value="nicolas">Nicolas Stromboni<span>60 €, déduits de vos achats</span></label>
+        </div>
+        <p class="step-label">2. Où</p>
+        <div class="choice" role="radiogroup" aria-label="Lieu">
+          <label for="l1"><input type="radio" name="where" id="l1" value="À la cave" checked>À la cave, Ajaccio<span>Avec dégustation sur place</span></label>
+          <label for="l2"><input type="radio" name="where" id="l2" value="En visio">En visio<span>Lien envoyé par e-mail</span></label>
+        </div>
+        <p class="step-label">3. Quel jour</p>
+        <div class="days" id="days"></div>
+        <p class="step-label">4. À quelle heure</p>
+        <div class="slots" id="slots"></div>
+        <div class="recap">
+          <p id="rdv-recap">Choisissez un créneau.</p>
+          <button class="btn" type="button" id="rdv-book" disabled>Réserver ce créneau</button>
+        </div>
+      </div>
+      <p class="disclaimer">Maquette : les dates, les places restantes et les tarifs sont donnés à titre d'exemple.</p>
     </div>
   </section>
 </main>
@@ -451,8 +550,22 @@ const BOXES = [
   { id: 'box-merci', dom: 'Coffret', name: 'Merci', price: 129, items: ['Clos Venturi rouge', 'Cuvée des Gouverneurs blanc', 'Huile d’olive de Corse', 'Carte écrite à la main'] },
   { id: 'box-grand', dom: 'Coffret', name: 'Grands vins de Corse', price: 189, items: ['Clos Canarelli, Corse Figari rouge', 'Domaine Antoine Arena, Patrimonio blanc', 'Domaine Comte Abbatucci, Faustine rouge', 'Fiche de dégustation signée'] }
 ];
+const COURSES = [
+  { id: 'c-cepages', day: '17 oct.', when: 'Vendredi · 19h', name: 'Les cépages corses en six verres', kind: 'Initiation', len: '2 h', price: 45, left: 4 },
+  { id: 'c-accords', day: '24 oct.', when: 'Vendredi · 19h', name: 'Vins et fromages corses', kind: 'Accords', len: '2 h', price: 55, left: 9 },
+  { id: 'c-patrimonio', day: '7 nov.', when: 'Vendredi · 19h', name: 'Patrimonio : verticale de blancs', kind: 'Perfectionnement', len: '2 h 30', price: 65, left: 2 },
+  { id: 'c-degust', day: '15 nov.', when: 'Samedi · 10h', name: 'Apprendre à déguster', kind: 'Initiation', len: '3 h', price: 60, left: 12 }
+];
+const ADVISORS = { team: { label: 'un caviste de l\u2019équipe', price: 30 }, nicolas: { label: 'Nicolas Stromboni', price: 60 } };
+const SLOTS = ['10h', '11h', '14h', '15h', '16h', '17h'];
+const DAYS = [
+  { d: '2026-10-07', l: 'mar.' }, { d: '2026-10-08', l: 'mer.' }, { d: '2026-10-09', l: 'jeu.' },
+  { d: '2026-10-10', l: 'ven.' }, { d: '2026-10-11', l: 'sam.' }, { d: '2026-10-14', l: 'mar.' }
+];
+const TAKEN = { team: ['2026-10-07 10h', '2026-10-10 16h', '2026-10-11 11h', '2026-10-11 14h'], nicolas: ['2026-10-07 10h', '2026-10-07 11h', '2026-10-08 14h', '2026-10-08 15h', '2026-10-09 10h', '2026-10-10 14h', '2026-10-10 15h', '2026-10-10 16h', '2026-10-11 10h', '2026-10-11 11h', '2026-10-11 14h', '2026-10-11 15h'] };
+const EXTRA = new Map();
 const OCC_LABEL = { offrir: 'Pour offrir.', remercier: 'Pour remercier un client.', recevoir: 'Pour recevoir à la maison.', grande: 'Pour les grandes occasions.', decouvrir: 'Pour découvrir la Corse.', tous: 'Toute la sélection.' };
-const ALL = [...PRODUCTS, ...BOXES];
+const ALL = [...PRODUCTS, ...BOXES, ...COURSES.map(c => ({ ...c, dom: 'Cours d\u2019œnologie', name: c.name + ', ' + c.day }))];
 const eur = n => n.toLocaleString('fr-FR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
 const SPLIT_MIN = 150, TEN_MIN = 500;
 
@@ -497,7 +610,7 @@ function renderCart() {
   let count = 0, total = 0;
   const rows = [];
   for (const [id, qty] of cart) {
-    const p = ALL.find(x => x.id === id);
+    const p = ALL.find(x => x.id === id) || EXTRA.get(id);
     count += qty; total += p.price * qty;
     rows.push(`<div class="line"><span>${p.dom} · ${p.name}</span><b class="tabnum">${eur(p.price * qty)}</b>
       <span class="qty"><button type="button" data-dec="${id}" aria-label="Retirer une unité">−</button><span class="tabnum">${qty}</span><button type="button" data-add="${id}" aria-label="Ajouter une unité">+</button></span></div>`);
@@ -513,6 +626,7 @@ function renderCart() {
   ].join('') : '';
   document.getElementById('checkout').disabled = !total;
   document.getElementById('checkout-msg').textContent = '';
+  if (typeof renderCourses === 'function' && document.getElementById('courses')) renderCourses();
 }
 
 function openCart(open) {
@@ -532,7 +646,7 @@ function updateEstimate() {
 document.addEventListener('click', e => {
   const t = e.target.closest('button, a');
   if (!t) return;
-  if (t.dataset.add) { cart.set(t.dataset.add, (cart.get(t.dataset.add) || 0) + 1); renderCart(); if (!t.closest('.drawer')) openCart(true); }
+  if (t.dataset.add) { const c = COURSES.find(x => x.id === t.dataset.add); if (c && (cart.get(c.id) || 0) >= c.left) return; if (t.closest('#p-rdv')) return; cart.set(t.dataset.add, (cart.get(t.dataset.add) || 0) + 1); renderCart(); if (!t.closest('.drawer')) openCart(true); }
   else if (t.dataset.dec) { const q = (cart.get(t.dataset.dec) || 0) - 1; q > 0 ? cart.set(t.dataset.dec, q) : cart.delete(t.dataset.dec); renderCart(); }
   else if (t.dataset.color) {
     color = t.dataset.color;
@@ -541,7 +655,6 @@ document.addEventListener('click', e => {
   }
   else if (t.dataset.occ) { occ = t.dataset.occ; renderProducts(); }
   else if (t.dataset.tier) document.getElementById('tier-msg').textContent = `Formule ${t.dataset.tier} choisie. Dans la version finale, l'inscription et le prélèvement mensuel se feront ici.`;
-  else if (t.dataset.event) document.getElementById('ev-msg').textContent = `Réservation « ${t.dataset.event} » : dans la version finale, le paiement de la place se fera ici.`;
   else if (t.id === 'cart-open') openCart(true);
   else if (t.id === 'cart-close') openCart(false);
   else if (t.id === 'checkout') document.getElementById('checkout-msg').textContent = 'Maquette : le paiement (carte et Alma) sera branché dans la version finale.';
@@ -558,5 +671,70 @@ document.getElementById('gift-form').addEventListener('submit', e => {
     : 'Indiquez le nom de l’entreprise pour envoyer la demande.';
 });
 
-renderProducts(); renderBoxes(); renderCart(); updateEstimate();
+function renderCourses() {
+  document.getElementById('courses').innerHTML = COURSES.map(c => {
+    const booked = cart.get(c.id) || 0, left = c.left - booked;
+    return `<div class="event"><p class="date">${c.day}<small>${c.when}</small></p>
+      <div><h3>${c.name}</h3><p>${c.kind} · ${c.len} · ${eur(c.price)} la place · <span class="seats${left <= 3 ? ' low' : ''}">${left > 0 ? left + ' place' + (left > 1 ? 's' : '') + ' restante' + (left > 1 ? 's' : '') : 'Complet'}</span></p></div>
+      <button class="btn small ghost" type="button" data-add="${c.id}"${left > 0 ? '' : ' disabled'}>Réserver une place</button></div>`;
+  }).join('');
+}
+
+let rdvDay = null, rdvSlot = null;
+const rdvVal = n => document.querySelector(`input[name="${n}"]:checked`).value;
+function renderRdv() {
+  const who = rdvVal('who'), taken = TAKEN[who];
+  document.getElementById('days').innerHTML = DAYS.map(x => {
+    const free = SLOTS.some(t => !taken.includes(x.d + ' ' + t));
+    return `<button class="pick" type="button" data-day="${x.d}" aria-pressed="${x.d === rdvDay}"${free ? '' : ' disabled'}><small>${x.l}</small>${Number(x.d.slice(8))} oct.</button>`;
+  }).join('');
+  document.getElementById('slots').innerHTML = rdvDay ? SLOTS.map(t => {
+    const off = taken.includes(rdvDay + ' ' + t);
+    return `<button class="pick" type="button" data-slot="${t}" aria-pressed="${t === rdvSlot}"${off ? ' disabled' : ''}>${t}</button>`;
+  }).join('') : '<p class="seats" style="grid-column:1/-1">Choisissez d\u2019abord un jour.</p>';
+  const a = ADVISORS[who], day = DAYS.find(x => x.d === rdvDay);
+  document.getElementById('rdv-recap').textContent = rdvDay && rdvSlot
+    ? `${rdvVal('where')} avec ${a.label}, ${day.l} ${Number(rdvDay.slice(8))} oct. à ${rdvSlot} · ${eur(a.price)}, déduits de vos achats`
+    : `Une heure avec ${a.label} · ${eur(a.price)}, déduits de vos achats. Choisissez un créneau.`;
+  document.getElementById('rdv-book').disabled = !(rdvDay && rdvSlot);
+}
+
+function updateEventEstimate() {
+  const n = Math.min(40, Math.max(0, Number(document.getElementById('e-people').value) || 0));
+  const pp = Number(rdvVal('formule'));
+  document.getElementById('e-estimate').textContent = !n ? 'Indiquez le nombre de personnes.'
+    : pp ? `Estimation : ${eur(n * pp)} TTC pour ${n} personnes (${eur(pp)} par personne). Le devis final peut varier selon les vins choisis.`
+    : `Formule sur mesure pour ${n} personnes : on vous rappelle pour en parler.`;
+}
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => {
+    const on = x === t; x.setAttribute('aria-selected', String(on));
+    document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+  });
+}));
+document.getElementById('p-rdv').addEventListener('change', e => { if (e.target.name === 'who') { rdvDay = null; rdvSlot = null; } renderRdv(); });
+document.getElementById('p-rdv').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.day) { rdvDay = b.dataset.day; rdvSlot = null; renderRdv(); }
+  else if (b.dataset.slot) { rdvSlot = b.dataset.slot; renderRdv(); }
+  else if (b.id === 'rdv-book') {
+    const who = rdvVal('who'), a = ADVISORS[who], day = DAYS.find(x => x.d === rdvDay);
+    const id = `rdv-${who}-${rdvDay}-${rdvSlot}`;
+    EXTRA.set(id, { id, dom: 'Rendez-vous conseil', name: `${rdvVal('where')} avec ${a.label}, ${day.l} ${Number(rdvDay.slice(8))} oct. ${rdvSlot}`, price: a.price });
+    TAKEN[who].push(rdvDay + ' ' + rdvSlot);
+    cart.set(id, 1); rdvSlot = null; renderRdv(); renderCart(); openCart(true);
+  }
+});
+document.getElementById('event-form').addEventListener('input', updateEventEstimate);
+document.getElementById('event-form').addEventListener('change', updateEventEstimate);
+document.getElementById('event-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const org = document.getElementById('e-org').value.trim();
+  document.getElementById('e-msg').textContent = org
+    ? `Demande enregistrée pour ${org}. Dans la version finale, elle arrive à la cave et vous recevez un devis par e-mail.`
+    : 'Indiquez votre nom ou celui du CE pour envoyer la demande.';
+});
+
+renderProducts(); renderBoxes(); renderCart(); updateEstimate(); renderCourses(); renderRdv(); updateEventEstimate();
 </script>
