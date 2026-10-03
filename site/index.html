@@ -59,18 +59,26 @@ header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; back
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .9rem; }
 .logo { font-family: var(--font-display); font-size: 1.15rem; letter-spacing: .04em; text-decoration: none; white-space: nowrap; }
 .logo small { display: block; font-family: var(--font-body); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-nav ul { display: flex; gap: 1.4rem; list-style: none; margin: 0; padding: 0; font-size: .9rem; }
-nav a { text-decoration: none; color: var(--muted); }
-nav a:hover { color: var(--fg); }
+header nav ul { display: flex; gap: 1.4rem; list-style: none; margin: 0; padding: 0; font-size: .9rem; }
+header nav a { text-decoration: none; color: var(--muted); }
+header nav a:hover { color: var(--fg); }
 .cart-btn { background: transparent; border: 1px solid var(--line); border-radius: var(--radius); padding: .45rem .8rem; color: var(--fg); font-size: .9rem; white-space: nowrap; }
 .cart-btn b { font-variant-numeric: tabular-nums; }
-@media (max-width: 860px) { nav { display: none; } }
+@media (max-width: 860px) { header nav { display: none; } }
 
 /* Hero */
-.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; padding-block: clamp(1.5rem, 4vw, 2.75rem); }
 .hero > div { display: grid; gap: 1.25rem; min-width: 0; }
-.hero .ph { aspect-ratio: 4 / 3.4; }
-.hero-cta { display: flex; flex-wrap: wrap; gap: .75rem; }
+.hero .ph { aspect-ratio: 3 / 2; }
+.doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding-bottom: clamp(2rem, 5vw, 3.5rem); }
+.door { display: grid; gap: .35rem; align-content: start; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); text-decoration: none; min-width: 0; }
+.door:hover { border-color: var(--fg); }
+.door.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.door h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.door h2::after { content: "→"; font-family: var(--font-body); font-size: 1.1rem; }
+.door p { font-size: .9rem; color: var(--muted); }
+.door.main p { color: var(--on-accent); opacity: .8; }
+@media (max-width: 760px) { .doors { grid-template-columns: 1fr; } }
 .facts { display: flex; flex-wrap: wrap; gap: 1.5rem; padding-top: .5rem; font-size: .85rem; color: var(--muted); }
 .facts b { display: block; color: var(--fg); font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; }
 @media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
@@ -238,10 +246,6 @@ footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size:
       <p class="eyebrow">Ajaccio · depuis la cave de l'avenue Franchini</p>
       <h1>Les vins de Corse, choisis un par un.</h1>
       <p class="lead">Nous avons 2 000 références en cave. Ici, on vous en montre une sélection, avec pour chaque bouteille l'avis de Nicolas Stromboni, meilleur caviste de France 2011. Le reste ? Il suffit de nous le demander.</p>
-      <div class="hero-cta">
-        <a class="btn" href="#selection">Voir la sélection</a>
-        <a class="btn ghost" href="#abonnement">Construire sa cave</a>
-      </div>
       <div class="facts">
         <div><b class="tabnum">100 000</b>bouteilles en cave</div>
         <div><b>3 ou 4 fois</b>sans frais dès 150 €</div>
@@ -250,6 +254,11 @@ footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size:
     </div>
     <div class="ph" role="img" aria-label="Emplacement photo">Photo de la cave · visuel DA</div>
   </div>
+  <nav class="wrap doors" aria-label="Accès rapides">
+    <a class="door" href="#ma-cave"><h2>Ma cave</h2><p>Vos bouteilles en garde, votre abonnement, vos prochaines ouvertures.</p></a>
+    <a class="door main" href="#selection"><h2>Acheter</h2><p>Vins de Corse, coffrets et épicerie fine, livrés chez vous.</p></a>
+    <a class="door" href="#reserver" data-tab="tab-rdv"><h2>Prendre rendez-vous</h2><p>Une heure avec un caviste ou avec Nicolas, à la cave ou en visio.</p></a>
+  </nav>
 
   <section id="occasions">
     <div class="wrap">
@@ -339,7 +348,7 @@ footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; font-size:
       </div>
       <p class="toast" id="tier-msg" role="status"></p>
 
-      <div class="cellar">
+      <div class="cellar" id="ma-cave">
         <div>
           <p class="eyebrow">Exemple d'espace membre</p>
           <h3>Ma cave</h3>
@@ -713,6 +722,7 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
     document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
   });
 }));
+document.querySelectorAll('[data-tab]').forEach(a => a.addEventListener('click', () => document.getElementById(a.dataset.tab).click()));
 document.getElementById('p-rdv').addEventListener('change', e => { if (e.target.name === 'who') { rdvDay = null; rdvSlot = null; } renderRdv(); });
 document.getElementById('p-rdv').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
